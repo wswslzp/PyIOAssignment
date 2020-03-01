@@ -1,6 +1,6 @@
 from IO_assign.IOGlobal import IOGlobal
 from IO_assign.IOPad import IOPad, IOPadInst, IOPadSide, IOPadLocal
-from IO_assign.IOHelper import inputNetlist, powerRing, powerStripe, countPorts, powerPlanDesign, powerIO
+from IO_assign.IOHelper import inputNetlist, powerRing, powerStripe, countPorts, powerPlanDesign, powerIO, commentDelete
 from IO_assign.IOAssignDef import IOAssignDef, PadDef, PadListDef, PadRingDef
 
 if __name__ == "__main__":
@@ -41,13 +41,14 @@ if __name__ == "__main__":
     io_def.digital_pad.supply.core_supply.VDD = "VDD1DGZI"
     io_def.digital_pad.supply.core_supply.VSS = "VSS1DGZI"
 
-    ports = inputNetlist("prePlace.v", "Top_remcm_mini")
+    ports = inputNetlist("wrapper.v", "wrapper")
+
     count = countPorts(ports)
     io_def.inputPorts(ports)
     io_def.setPGPad(4, 4, "CORE_VCCK", "CORE_GNDK", "IO_VCCK", "IO_GNDK")
     
     # print(str(io_global) + '\n' + str(io_def))
-    io_def.writeIOFile("io_assign.txt")
+    io_def.writeIOFile("wrapper_io.txt")
     power_io_plan = powerIO(300e-3, 3.3, 108e-3, 88, 5)
     
     # pad1 = PadDef()

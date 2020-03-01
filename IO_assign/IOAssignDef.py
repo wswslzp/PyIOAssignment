@@ -149,16 +149,16 @@ class IOAssignDef(object):
 
     def setCorner(self):
         self.pad_ring.topleft.setRowMax(1).addPad(
-            PadDef().setName("TL_CORNER").setCell(self.digital_pad.supply.corner)
+            PadDef().setName("TL_CORNER").setCell(self.digital_pad.supply.corner).setOrientation("R270")
         )
         self.pad_ring.topright.setRowMax(1).addPad(
-            PadDef().setName("TR_CORNER").setCell(self.digital_pad.supply.corner)
+            PadDef().setName("TR_CORNER").setCell(self.digital_pad.supply.corner).setOrientation("R180")
         )
         self.pad_ring.bottomleft.setRowMax(1).addPad(
-            PadDef().setName("BL_CORNER").setCell(self.digital_pad.supply.corner)
+            PadDef().setName("BL_CORNER").setCell(self.digital_pad.supply.corner).setOrientation("R0")
         )
         self.pad_ring.bottomright.setRowMax(1).addPad(
-            PadDef().setName("BR_CORNER").setCell(self.digital_pad.supply.corner)
+            PadDef().setName("BR_CORNER").setCell(self.digital_pad.supply.corner).setOrientation("R90")
         )
 
     def setPGPad(self, io_sup_num, core_sup_num, core_p, core_g, io_p, io_g):

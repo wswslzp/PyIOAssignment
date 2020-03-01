@@ -1,11 +1,20 @@
 import re
 import math
+
+def commentDelete(verilog_netlist):
+    comment_pattern1 = re.compile(
+        r"(//.*\n|/\*[.|\n]*\*/)"
+    )
+    netlist_without_comment = re.sub(comment_pattern1, '', verilog_netlist)
+    return netlist_without_comment
+
 def inputNetlist(netlist_file, top_module):
-    
+
     try:
         with open(netlist_file, "r") as f:
             ports = []
             verilog_netlist = f.read()
+            verilog_netlist = commentDelete(verilog_netlist)
             re_module = re.compile(r"module\s*" + top_module)
             re_module_match = re_module.search(verilog_netlist)
             if re_module_match:
