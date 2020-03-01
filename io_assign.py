@@ -1,7 +1,7 @@
 from IO_assign.IOGlobal import IOGlobal
 from IO_assign.IOPad import IOPad, IOPadInst, IOPadSide, IOPadLocal
 from IO_assign.IOHelper import inputNetlist, powerRing, powerStripe, countPorts, powerPlanDesign, powerIO, commentDelete
-from IO_assign.IOAssignDef import IOAssignDef, PadDef, PadListDef, PadRingDef
+from IO_assign.IOAssignDef import IOAssignDef, PadDef, PadListDef, PadRingDef, writeNetlist
 
 if __name__ == "__main__":
     # print(inputNetlist("prePlace.v", "Top_remcm_mini"))
@@ -30,10 +30,10 @@ if __name__ == "__main__":
 
     # io_content = ""
 
-    io_global = IOGlobal().setVersion(3).setIOOrder("clockwise").setTotalEdge(4)
+    # io_global = IOGlobal().setVersion(3).setIOOrder("clockwise").setTotalEdge(4)
 
     io_def = IOAssignDef()
-    io_def.digital_pad.io.DIO = "PADI"
+    io_def.digital_pad.io.DIO = "MDSDUIX16"
     io_def.digital_pad.io.BDIO = "MDSDUIX16"
     io_def.digital_pad.supply.corner = "MCORNERI"
     io_def.digital_pad.supply.io_supply.VDD = "VDD2DGZI"
@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     ports = inputNetlist("wrapper.v", "wrapper")
 
-    count = countPorts(ports)
+    # count = countPorts(ports)
     io_def.inputPorts(ports)
     io_def.setPGPad(4, 4, "CORE_VCCK", "CORE_GNDK", "IO_VCCK", "IO_GNDK")
     
@@ -56,3 +56,5 @@ if __name__ == "__main__":
     # pad2 = PadDef()
     # pad2.setName("a1").setCell("PADI")
 
+    netlist = writeNetlist("wrapper_top_io.v", io_def, "wrapper", ports)
+    print(netlist)

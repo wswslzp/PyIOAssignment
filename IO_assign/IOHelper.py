@@ -151,3 +151,18 @@ def powerStripe(total_power,
         "vertical_space": SpaceV,
         "horizontal_space": SpaceH
     }
+
+def multilineComment(*comment):
+    cblock = ""
+    cblock_width = 0
+    for c in comment:
+        cblock_width = 10 + len(c) if cblock_width < (10 + len(c)) else cblock_width
+        cblock += '*' + 5*' ' + c + '\n'
+    cblock_ub = '/' + cblock_width*'*' + '\n' + '*\n'
+    cblock_db = '*\n' + cblock_width* '*' + '/'
+    return cblock_ub + cblock + cblock_db + '\n'
+
+if __name__ == "__main__":
+    print(
+        multilineComment("Hello,", "Shit GAme")
+    )
