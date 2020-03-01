@@ -21,9 +21,9 @@ def inputNetlist(netlist_file, top_module):
                 re_module_start = re_module_match.start()
                 re_endmodule = re.compile(r"endmodule")
                 re_module_end = re_endmodule.search(verilog_netlist[re_module_start:]).end()
-                verilog_netlist = verilog_netlist[re_module_start:re_module_end]# should only have one top module
+                verilog_netlist = verilog_netlist[re_module_start:re_module_start + re_module_end]# should only have one top module
                 # port search
-                ports_match_result = re.findall(r"\s*(input|output|inout)\s*(\[\d+:\d+\])?\s+(\w+)\s*(\[\d+:\d+\])?", verilog_netlist)
+                ports_match_result = re.findall(r"\s*(input|output|inout)\s*(\[\d+:\d+\])?\s+(\w+)\s*(\[\d+:\d+\])?\s*;", verilog_netlist)
                 for idx in range(0, len(ports_match_result)):
                     ports.append(
                         {
@@ -33,6 +33,18 @@ def inputNetlist(netlist_file, top_module):
                             "dims": ports_match_result[idx][3]
                         }
                     )
+                ports_match_result = re.findall(r"(input|output|inout)\s+([\s\w,\n]+);", verilog_netlist)
+                for idx in range(0, len(ports_match_result)):
+                    name_list = re.split(r"[,\s\n]+", ports_match_result[idx][1])
+                    for name in name_list:
+                        ports.append(
+                            {
+                                "direction": ports_match_result[idx][0],
+                                "width": "",
+                                "name": name,
+                                "dims": ""
+                            }
+                        )
                 return ports
             else:
                 print("Top Module: " + top_module + "does not exist!")
