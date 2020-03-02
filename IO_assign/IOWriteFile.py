@@ -39,7 +39,7 @@ def cellInstNetlist(ports,
                     oen = "0",
                     pd = "",
                     pu = "",
-                    ie = ""):
+                    ie = "1'b1"):
 
     port_count = countPorts(ports)
     port_total_num = len(port_count["ports"])
@@ -58,9 +58,9 @@ def cellInstNetlist(ports,
                 cell_inst_name = cell_name + "_" + ports[iii]["name"] + posfix_jjj + posfix_kkk
 
                 content += cell_name + '\t' + cell_inst_name + '_inst' + '\n(\n'
-                content += "\t.DS0(" + ds[0] + "),\n"
-                content += "\t.DS1(" + ds[1] + "),\n"
-                content += "\t.DS2(" + ds[2] + "),\n"
+                content += "\t.DS0(" + "1'b" + ds[2] + "),\n"
+                content += "\t.DS1(" + "1'b" + ds[1] + "),\n"
+                content += "\t.DS2(" + "1'b" + ds[0] + "),\n"
                 content += "\t.SMT(" + smt + "),\n"
                 content += "\t.OEN(" + oen + "),\n"
                 content += "\t.PU(" + pu + "),\n"
@@ -131,10 +131,20 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
 
                     # cell to pad
                     wire_c2p_name = port_name + wire_name_c2pfix
-                    port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
+                    if port_direction == "output": 
+                        port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
+                    elif port_direction == "input":
+                        port_merge += "assign\t" + wire_c2p_name + "\t=\t" + port_name + ';\n'
+                    else:
+                        port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
                     # module to cell
                     wire_m2c_name = port_name + wire_name_m2cfix
-                    port_merge += "assign\t" + wire_m2c_name + "\t=\t" + ports[ii]["name"] + posfix_bracket + ';\n'
+                    if port_direction == "output":
+                        port_merge += "assign\t" + wire_m2c_name + "\t=\t" + ports[ii]["name"] + posfix_bracket + ';\n'
+                    elif port_direction == "input":
+                        port_merge += "assign\t" + ports[ii]["name"] + posfix_bracket + "\t=\t" + wire_m2c_name + ';\n'
+                    else:
+                        port_merge += "assign\t" + wire_m2c_name + "\t=\t" + ports[ii]["name"] + posfix_bracket + ';\n'
 
                     port_dec += '\t' + port_direction + '\t\t'+ port_name # cell to port
                     port_dec += '\n' if (ii==port_total_num-1) and (jj==port_dims-1) and (kk==port_width-1) else ',\n'
@@ -146,9 +156,9 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
         # )
 
         # content += wire_inst_port + wire_inst_c2p + wire_inst_m2c + '\n\n'
-        content += multilineComment(
-            "Port instance"
-        ) + wire_inst_port
+        # content += multilineComment(
+        #     "Port instance"
+        # ) + wire_inst_port
         content += multilineComment(
             "Cell to Port wire instance"
         ) + wire_inst_c2p

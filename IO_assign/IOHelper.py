@@ -23,17 +23,41 @@ def inputNetlist(netlist_file, top_module):
                 re_module_end = re_endmodule.search(verilog_netlist[re_module_start:]).end()
                 verilog_netlist = verilog_netlist[re_module_start:re_module_start + re_module_end]# should only have one top module
                 # port search
-                ports_match_result = re.findall(r"\s*(input|output|inout)\s*(\[\d+:\d+\])?\s+(\w+)\s*(\[\d+:\d+\])?\s*;", verilog_netlist)
-                for idx in range(0, len(ports_match_result)):
-                    ports.append(
-                        {
-                            "direction": ports_match_result[idx][0],
-                            "width": ports_match_result[idx][1],
-                            "name": ports_match_result[idx][2],
-                            "dims": ports_match_result[idx][3]
-                        }
-                    )
-                ports_match_result = re.findall(r"(input|output|inout)\s+([\s\w,\n]+);", verilog_netlist)
+                # port_pattern_1 = re.compile(
+                #     r"\([\s\n]*((input|output|inout)\s*(\[\d+:\d+\])?\s*([\s\w,\n\[:\]]+)[\s\n]*)+\);"
+                # )
+                # portdec_match = port_pattern_1.match(verilog_netlist)
+                # ports_match_results_1 = port_pattern_1.findall(verilog_netlist)
+
+
+                # port_pattern_2 = re.compile(
+                #     r"(input|output|inout)\s*(\[\d+:\d+\])?\s*([\s\w,\n\[:\]]+)[;,]"
+                # )
+                # ports_match_results = port_pattern_2.findall(verilog_netlist)
+                # for width_section in ports_match_results:
+                #     port_name_list = width_section[2]
+                #     name_sep = re.compile(r"[\s,\n]+")
+                #     port_name_list = name_sep.split(port_name_list)
+                #     for port_name_dims in port_name_list:
+                #         name_dims_pattern = re.compile(
+                #             r"(\w+)(\[\d:\d\])*"
+                #         )
+                #         name_dims = name_dims_pattern.findall(port_name_dims)
+                #         name_dims = name_dims[0]
+                #         ports.append(
+                #             {
+                #                 "direction": width_section[0],
+                #                 "width": width_section[1],
+                #                 "name": name_dims[0],
+                #                 "dims": name_dims[1]
+                #             }
+                #         )
+                port_pattern_2 = re.compile(
+                    r"(input|output|inout)\s+([\s\w,\n]+);"
+                )
+                # ports_match_result = re.findall(r"(input|output|inout)\s+([\s\w,\n]+);", verilog_netlist)
+                ports_match_result = port_pattern_2.findall(verilog_netlist)
+                verilog_netlist = port_pattern_2.sub("@", verilog_netlist)
                 for idx in range(0, len(ports_match_result)):
                     name_list = re.split(r"[,\s\n]+", ports_match_result[idx][1])
                     for name in name_list:
@@ -45,6 +69,22 @@ def inputNetlist(netlist_file, top_module):
                                 "dims": ""
                             }
                         )
+
+                port_pattern_1 = re.compile(
+                    r"\s*(input|output|inout)\s*(\[\d+:\d+\])?\s+(\w+)\s*(\[\d+:\d+\])?\s*"
+                )
+                # ports_match_result = re.findall(r"\s*(input|output|inout)\s*(\[\d+:\d+\])?\s+(\w+)\s*(\[\d+:\d+\])?\s*", verilog_netlist)
+                ports_match_result = port_pattern_1.findall(verilog_netlist)
+                verilog_netlist = port_pattern_1.sub("@", verilog_netlist)
+                for idx in range(0, len(ports_match_result)):
+                    ports.append(
+                        {
+                            "direction": ports_match_result[idx][0],
+                            "width": ports_match_result[idx][1],
+                            "name": ports_match_result[idx][2],
+                            "dims": ports_match_result[idx][3]
+                        }
+                    )
                 return ports
             else:
                 print("Top Module: " + top_module + "does not exist!")
@@ -175,6 +215,4 @@ def multilineComment(*comment):
     return cblock_ub + cblock + cblock_db + '\n'
 
 if __name__ == "__main__":
-    print(
-        multilineComment("Hello,", "Shit GAme")
-    )
+    inputNetlist("t1.v", "wrapper")

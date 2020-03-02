@@ -15,16 +15,23 @@ if __name__ == "__main__":
     io_def.digital_pad.supply.core_supply.VDD = "VDD1DGZI"
     io_def.digital_pad.supply.core_supply.VSS = "VSS1DGZI"
 
-    # ports = inputNetlist("wrapper.v", "wrapper")
-    ports = inputNetlist("Top_remcm_mini_CCS102050_post_dc.v", "Top_remcm_mini")
+    wr = 0
+
+    if wr == 1:
+        ports = inputNetlist("wrapper.v", "wrapper")
+    else:
+        ports = inputNetlist("Top_remcm_mini_CCS102050_post_dc.v", "Top_remcm_mini")
+
 
     # count = countPorts(ports)
     io_def.inputPorts(ports)
     io_def.setPGPad(4, 4, "CORE_VCCK", "CORE_GNDK", "IO_VCCK", "IO_GNDK")
     
     # print(str(io_global) + '\n' + str(io_def))
-    # io_def.writeIOFile("result/wrapper_io.txt")
-    io_def.writeIOFile("result/remcm_io.txt")
+    if wr == 1:
+        io_def.writeIOFile("result/wrapper_io.txt")
+    else:
+        io_def.writeIOFile("result/remcm_io.txt")
     power_io_plan = powerIO(300e-3, 3.3, 108e-3, 88, 5)
     
     # pad1 = PadDef()
@@ -32,6 +39,8 @@ if __name__ == "__main__":
     # pad2 = PadDef()
     # pad2.setName("a1").setCell("PADI")
 
-    # netlist = writeNetlist("result/wrapper_top_io.v", io_def, "wrapper", ports)
-    netlist = writeNetlist("result/remcm_top_io.v", io_def, "Top_remcm_mini", ports)
+    if wr == 1:
+        netlist = writeNetlist("result/wrapper_top_io.v", io_def, "wrapper", ports)
+    else:
+        netlist = writeNetlist("result/remcm_top_with_io.v", io_def, "Top_remcm_mini", ports)
     print(netlist)
