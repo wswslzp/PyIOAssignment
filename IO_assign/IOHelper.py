@@ -3,10 +3,75 @@ import math
 
 def commentDelete(verilog_netlist):
     comment_pattern1 = re.compile(
-        r"(//.*\n|/\*[.|\n]*\*/)"
+        r"(//.*\n|/\*([\s\S]*)\*/)"
     )
     netlist_without_comment = re.sub(comment_pattern1, '', verilog_netlist)
     return netlist_without_comment
+
+def moduleSlice(verilog_netlist):
+    # module_pattern = re.compile(
+    #     r"module([\s\S]*)endmodule"
+    # )
+    modules = []
+    module_pattern = re.compile(
+        r"module[\s\n]+(\w+)([\s\S]*?)endmodule"
+    )
+    module_name_contents = module_pattern.findall(verilog_netlist)
+    for mnc in module_name_contents:
+        modules.append(
+            {
+                "name": mnc[0],
+                "content": mnc[1]
+            }
+        )
+
+    return modules
+
+def parseParameter(verilog_netlist):
+    modules = moduleSlice(verilog_netlist)
+    module_parameters = []
+    for module in modules:
+        parameters = {
+            "module": module["name"],
+            "params": {}
+        }
+
+        single_module = module["content"]
+
+        port_params_region = re.compile(
+            r"#[\s\n]*\([\s\n]*([\s\n\w,=]*)\)"
+        )
+        port_params_region_part = port_params_region.findall(single_module)
+        single_module = port_params_region.sub("@",single_module)
+        
+        local_params_pattern = re.compile(
+            r"(parameter|localparam)[\s\n]+([\w=,\s\n]*);"
+        )
+        local_params_part = local_params_pattern.findall(single_module)
+        single_module = local_params_pattern.sub("@", single_module)
+
+        port_param_pattern = re.compile(
+            r"(\w+)[\s\n]*=[\s\n]*(\d+)"
+        )
+        local_params_pattern = re.compile(
+            r"(\w+)[\s\n]*=[\s\n]*(\d+)"
+        )
+
+        params_name_values = port_param_pattern.findall(port_params_region_part[0])
+        for pnv in params_name_values:
+            parameters["params"][pnv[0]] = pnv[1]
+
+        for lpp in local_params_part:
+            lpp_type_name_values = local_params_pattern.findall(lpp[1])
+            for ltnv in lpp_type_name_values:
+                parameters["params"][ltnv[0]] = ltnv[1]
+
+        module_parameters.append(parameters)
+
+    return module_parameters
+
+def subsParameters(verilog_netlist, params):
+    pass
 
 def inputNetlist(netlist_file, top_module):
 
@@ -22,36 +87,6 @@ def inputNetlist(netlist_file, top_module):
                 re_endmodule = re.compile(r"endmodule")
                 re_module_end = re_endmodule.search(verilog_netlist[re_module_start:]).end()
                 verilog_netlist = verilog_netlist[re_module_start:re_module_start + re_module_end]# should only have one top module
-                # port search
-                # port_pattern_1 = re.compile(
-                #     r"\([\s\n]*((input|output|inout)\s*(\[\d+:\d+\])?\s*([\s\w,\n\[:\]]+)[\s\n]*)+\);"
-                # )
-                # portdec_match = port_pattern_1.match(verilog_netlist)
-                # ports_match_results_1 = port_pattern_1.findall(verilog_netlist)
-
-
-                # port_pattern_2 = re.compile(
-                #     r"(input|output|inout)\s*(\[\d+:\d+\])?\s*([\s\w,\n\[:\]]+)[;,]"
-                # )
-                # ports_match_results = port_pattern_2.findall(verilog_netlist)
-                # for width_section in ports_match_results:
-                #     port_name_list = width_section[2]
-                #     name_sep = re.compile(r"[\s,\n]+")
-                #     port_name_list = name_sep.split(port_name_list)
-                #     for port_name_dims in port_name_list:
-                #         name_dims_pattern = re.compile(
-                #             r"(\w+)(\[\d:\d\])*"
-                #         )
-                #         name_dims = name_dims_pattern.findall(port_name_dims)
-                #         name_dims = name_dims[0]
-                #         ports.append(
-                #             {
-                #                 "direction": width_section[0],
-                #                 "width": width_section[1],
-                #                 "name": name_dims[0],
-                #                 "dims": name_dims[1]
-                #             }
-                #         )
                 port_pattern_2 = re.compile(
                     r"(input|output|inout)\s+([\s\w,\n]+);"
                 )
@@ -215,4 +250,9 @@ def multilineComment(*comment):
     return cblock_ub + cblock + cblock_db + '\n'
 
 if __name__ == "__main__":
-    inputNetlist("t1.v", "wrapper")
+    # inputNetlist("t1.v", "wrapper")
+    with open("t1.v", "r") as f:
+        verilog_netlist = f.read()
+        modules = moduleSlice(verilog_netlist)
+        params = parseParameter(verilog_netlist)
+        print(params)
