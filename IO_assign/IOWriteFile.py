@@ -119,14 +119,15 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
             for pad_inst in pad_side.leaf_list:
                 pad_inst_cell = pad_inst.cell[1:-1]
                 pad_inst_name = pad_inst.name[1:-1]
+                last_idx = pad_inst_name.rfind("_")
                 if pad_inst_cell == core_vdd_cell:
-                    pg_name_set["core_vdd"] = pad_inst_name
+                    pg_name_set["core_vdd"] = pad_inst_name[:last_idx]
                 elif pad_inst_cell == core_vss_cell:
-                    pg_name_set["core_vss"] = pad_inst_name
+                    pg_name_set["core_vss"] = pad_inst_name[:last_idx]
                 elif pad_inst_cell == io_vdd_cell:
-                    pg_name_set["io_vdd"] = pad_inst_name
+                    pg_name_set["io_vdd"] = pad_inst_name[:last_idx]
                 elif pad_inst_cell == io_vss_cell:
-                    pg_name_set["io_vss"] = pad_inst_name
+                    pg_name_set["io_vss"] = pad_inst_name[:last_idx]
                 else:
                     continue
         for pad_side in io_assign_def.pad_ring.leaf_list:

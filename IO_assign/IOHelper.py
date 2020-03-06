@@ -71,6 +71,14 @@ def parseParameter(verilog_netlist):
     return module_parameters
 
 def subsParameters(verilog_netlist, params):
+    port_param_pattern = re.compile(
+        r"#\(([\s\S]*?)\)"
+    )
+    verilog_netlist = port_param_pattern.sub("", verilog_netlist)
+    local_params_pattern = re.compile(
+        r"(parameter|localparam)[\s\n]+([\w=,\s\n]*);"
+    )
+    verilog_netlist = local_params_pattern.sub("", verilog_netlist)
     pass
 
 def inputNetlist(netlist_file, top_module):
@@ -171,12 +179,14 @@ def powerPlanDesign(total_power,
                     res_square_v,
                     v_pad, i_pad,
                     total_port_num):
-    return (
-        powerRing(total_power, vdd, max_current_density, ring_num, k, metal_pitch),
-        powerStripe(total_power, vdd, k, vertical_pitch, min_nand_width, stdcell_height, chip_height, 
+    powerplan = {
+        "power_ring": powerRing(total_power, vdd, max_current_density, ring_num, k, metal_pitch),
+        "power_stripe": powerStripe(total_power, vdd, k, vertical_pitch, min_nand_width, stdcell_height, chip_height, 
                     chip_width,  IR_drop, res_square_v, res_square_h),
-        powerIO(total_power, v_pad, i_pad, total_port_num, k)
-    )
+        "power_io": powerIO(total_power, v_pad, i_pad, total_port_num, k)
+    }
+
+    return powerplan
 
 def powerIO(total_power,
             v_pad,

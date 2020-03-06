@@ -141,10 +141,11 @@ class IOAssignDef(object):
                 for kk in range(0, pad_width):
                     posfix_kk = "" if pad_width==1 else "_"+str(kk)
                     posfix = posfix_jj + posfix_kk
-                    pad_name = port_count["ports"][ii]["name"] + "_PORT" + posfix
+                    # pad_inst_name = port_count["ports"][ii]["name"] + "_PORT" + posfix
                     pad_cell = self.digital_pad.io.BDIO if ports[ii]["direction"] == "inout" else self.digital_pad.io.DIO
+                    pad_inst_name = pad_cell + "_" + ports[ii]["name"] + posfix + "_inst"
                     pad_def = PadDef()
-                    pad_def.setName(pad_name).setCell(pad_cell)
+                    pad_def.setName(pad_inst_name).setCell(pad_cell)
                     self.pad_ring.addPad(pad_def)
 
     def setCorner(self):
@@ -171,41 +172,93 @@ class IOAssignDef(object):
         # pg_pad_skip = row_max_num // (core_sup_num_per_side + io_sup_num_per_side) + 1
         pg_pad_skip = math.ceil(row_max_num/(core_sup_num_per_side + io_sup_num_per_side))
         insert_position = [x for x in range(pg_pad_skip-1, row_max_num, pg_pad_skip)]
-        vdd_pad_io_supply = PadDef().setName(io_p).setCell(
-            self.digital_pad.supply.io_supply.VDD
-        )
-        vss_pad_io_supply = PadDef().setName(io_g).setCell(
-            self.digital_pad.supply.io_supply.VSS
-        )
-        vdd_pad_core_supply = PadDef().setName(core_p).setCell(
-            self.digital_pad.supply.core_supply.VDD
-        )
-        vss_pad_core_supply = PadDef().setName(core_g).setCell(
-            self.digital_pad.supply.core_supply.VSS
-        )
         count = 0
-        print("insert_position = ", insert_position)
         for idx in insert_position:
+            import copy
             if count % 2 == 0:
-                self.pad_ring.top.insertPad(vdd_pad_io_supply, idx)
-                self.pad_ring.top.insertPad(vss_pad_io_supply, idx+1)
-                self.pad_ring.left.insertPad(vdd_pad_io_supply, idx)
-                self.pad_ring.left.insertPad(vss_pad_io_supply, idx+1)
-                self.pad_ring.bottom.insertPad(vdd_pad_io_supply, idx)
-                self.pad_ring.bottom.insertPad(vss_pad_io_supply, idx+1)
-                self.pad_ring.right.insertPad(vdd_pad_io_supply, idx)
-                self.pad_ring.right.insertPad(vss_pad_io_supply, idx+1)
+                # self.pad_ring.top.insertPad(vdd_pad_io_supply.deepCopy(), idx)
+                self.pad_ring.top.insertPad(
+                    PadDef().setName(io_p).setCell(self.digital_pad.supply.io_supply.VDD),
+                    idx
+                )
+                self.pad_ring.top.insertPad(
+                    PadDef().setName(io_g).setCell(self.digital_pad.supply.io_supply.VSS),
+                    idx + 1
+                )
+                self.pad_ring.left.insertPad(
+                    PadDef().setName(io_p).setCell(self.digital_pad.supply.io_supply.VDD),
+                    idx
+                )
+                self.pad_ring.left.insertPad(
+                    PadDef().setName(io_g).setCell(self.digital_pad.supply.io_supply.VSS),
+                    idx + 1
+                )
+                self.pad_ring.right.insertPad(
+                    PadDef().setName(io_p).setCell(self.digital_pad.supply.io_supply.VDD),
+                    idx
+                )
+                self.pad_ring.right.insertPad(
+                    PadDef().setName(io_g).setCell(self.digital_pad.supply.io_supply.VSS),
+                    idx + 1
+                )
+                self.pad_ring.bottom.insertPad(
+                    PadDef().setName(io_p).setCell(self.digital_pad.supply.io_supply.VDD),
+                    idx
+                )
+                self.pad_ring.bottom.insertPad(
+                    PadDef().setName(io_g).setCell(self.digital_pad.supply.io_supply.VSS),
+                    idx+1
+                )
             else:
-                self.pad_ring.top.insertPad(vdd_pad_core_supply, idx)
-                self.pad_ring.top.insertPad(vss_pad_core_supply, idx+1)
-                self.pad_ring.left.insertPad(vdd_pad_core_supply, idx)
-                self.pad_ring.left.insertPad(vss_pad_core_supply, idx+1)
-                self.pad_ring.bottom.insertPad(vdd_pad_core_supply, idx)
-                self.pad_ring.bottom.insertPad(vss_pad_core_supply, idx+1)
-                self.pad_ring.right.insertPad(vdd_pad_core_supply, idx)
-                self.pad_ring.right.insertPad(vss_pad_core_supply, idx+1)
+                self.pad_ring.top.insertPad(
+                    PadDef().setName(core_p).setCell(self.digital_pad.supply.core_supply.VDD),
+                    idx
+                )
+                self.pad_ring.top.insertPad(
+                    PadDef().setName(core_g).setCell(self.digital_pad.supply.core_supply.VSS),
+                    idx + 1
+                )
+                self.pad_ring.left.insertPad(
+                    PadDef().setName(core_p).setCell(self.digital_pad.supply.core_supply.VDD),
+                    idx
+                )
+                self.pad_ring.left.insertPad(
+                    PadDef().setName(core_g).setCell(self.digital_pad.supply.core_supply.VSS),
+                    idx + 1
+                )
+                self.pad_ring.right.insertPad(
+                    PadDef().setName(core_p).setCell(self.digital_pad.supply.core_supply.VDD),
+                    idx
+                )
+                self.pad_ring.right.insertPad(
+                    PadDef().setName(core_g).setCell(self.digital_pad.supply.core_supply.VSS),
+                    idx + 1
+                )
+                self.pad_ring.bottom.insertPad(
+                    PadDef().setName(core_p).setCell(self.digital_pad.supply.core_supply.VDD),
+                    idx
+                )
+                self.pad_ring.bottom.insertPad(
+                    PadDef().setName(core_g).setCell(self.digital_pad.supply.core_supply.VSS),
+                    idx+1
+                )
             count += 1
-
+        # uniquify all the pg pad
+        idx = 0
+        pg_cell_list = [
+            self.digital_pad.supply.core_supply.VDD,
+            self.digital_pad.supply.core_supply.VSS,
+            self.digital_pad.supply.io_supply.VDD,
+            self.digital_pad.supply.io_supply.VSS
+        ]
+        for side in self.pad_ring.leaf_list:
+            for pad in side.leaf_list:
+                pad_cell = pad.cell[1:-1]
+                pad_name = pad.name[1:-1]
+                if pad_cell in pg_cell_list:
+                    pad.setName(pad_name + "_" + str(idx))
+                    idx += 1
+                
     # ???
     def setOrientation(self):
         pass
@@ -214,7 +267,7 @@ class IOAssignDef(object):
         io_global = IOGlobal().setVersion(3).setIOOrder("clockwise").setTotalEdge(4)
         self.setCorner()
         io_pad = str(self.pad_ring)
-        io_content = str(io_global) + io_pad
+        io_content = str(io_global) + '\n' + io_pad
         with open(io_file, "w") as f:
             f.write(io_content)
 

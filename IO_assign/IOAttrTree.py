@@ -49,10 +49,12 @@ class IOLeaf(object):
     def _decrIndentLevel(self):
         self.__indent_level -= 1
 
-    def _deepCopy(self):
+    def deepCopy(self):
         tmp = IOLeaf()
         tmp.head = self.head
-        tmp.tail = self.tail
+        # tmp.tail = self.tail
+        for t in self.tail:
+            tmp.tail.append(t)
         tmp.single_row = self.single_row
         tmp._setIndentLevel(self.__indent_level)
         return tmp
@@ -112,7 +114,7 @@ class IOTree(object):
         for leaf in self.leaf_list:
             leaf._decrIndentLevel()
     
-    def _deepCopy(self):
+    def deepCopy(self):
         dst = IOTree()
         dst.root = self.root
         dst.__indent_level = self.__indent_level
@@ -162,6 +164,10 @@ class IOAttrLeaf(IOLeaf, IOAttr):
     def __str__(self):
         self._construct()
         return IOLeaf.__str__(self)
+
+    def deepCopy(self):
+        import copy 
+        return copy.deepcopy(self)
 
 class IOAttrTree(IOTree):
     

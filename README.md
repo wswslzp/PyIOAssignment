@@ -28,7 +28,7 @@ io_def.digital_pad.supply.core_supply.VSS = "VSS1DGZS"
 ...
 # input the nelist file and the top module name
 # the function try to parse the port definition
-ports = inputNetlist("Top_Remcm_mini_sram_post_dc.sv", "Top_Remcm_mini_sram") 
+ports = inputNetlist("clock_ctrl.v", "clock_ctrl") 
 ...
 # set the power ground pad
 # there are 4 pairs of IO supply pads and 4 pairs 
@@ -36,10 +36,10 @@ ports = inputNetlist("Top_Remcm_mini_sram_post_dc.sv", "Top_Remcm_mini_sram")
 io_def.setPGPad(4, 4, "CORE_VCCK", "CORE_GNDK", "IO_VCCK", "IO_GNDK")
 ...
 # write the IO assignment file into result directory
-io_def.writeIOFile("result/remcm_s.io")
+io_def.writeIOFile("clock_ctrl.io")
 ...
 # write the pad-wrapped netlist into result directory
-netlist = writeNetlist("result/remcm_top_with_io_s.v", io_def, "Top_Remcm_mini_sram", ports)
+netlist = writeNetlist("clock_ctrl_wrapped.v", io_def, "clock_ctrl_wrapped", ports)
 ```
 
 
@@ -48,8 +48,7 @@ netlist = writeNetlist("result/remcm_top_with_io_s.v", io_def, "Top_Remcm_mini_s
 ```bash
 # enter the root directory
 # create a directory to store generated files
-mkdir result
-
+chmod u+x ./io_assign.py
 ./io_assign.py
 ```
 

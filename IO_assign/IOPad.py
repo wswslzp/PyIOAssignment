@@ -75,6 +75,10 @@ class IOPadInst(IOAttrLeaf):
         self._addAttr("endspace_gap", endspace_gap)
         return self
 
+    def deepCopy(self):
+        import copy
+        return copy.deepcopy(self)
+        
 
 class IOPadSide(IOAttrTree):
     
