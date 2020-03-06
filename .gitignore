@@ -1,1 +1,5 @@
+.gitignore
 io_assign.py
+tmp/
+result/
+IO_assign/__pycache__/
