@@ -48,8 +48,8 @@ netlist = writeNetlist("clock_ctrl_wrapped.v", io_def, "clock_ctrl_wrapped", por
 ```bash
 # enter the root directory
 # create a directory to store generated files
-chmod u+x ./io_assign.py
-./io_assign.py
+chmod u+x ./io_assign_main.py
+./io_assign_main.py
 ```
 
 ## Notice 
