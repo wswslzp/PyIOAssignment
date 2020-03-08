@@ -209,8 +209,8 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
                     port_dec += '\n' if (ii==port_total_num-1) and (jj==port_dims-1) and (kk==port_width-1) else ',\n'
 
         
-        for pg_type in pg_name_set:
-            port_dec = "\tinout\t\t" + pg_name_set[pg_type] + ',\n' + port_dec
+        # for pg_type in pg_name_set:
+        #     port_dec = "\tinout\t\t" + pg_name_set[pg_type] + ',\n' + port_dec
         content += module_dec(port_dec)
 
         # content += multilineComment(
