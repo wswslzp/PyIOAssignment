@@ -291,10 +291,10 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
         module_inst = lambda pin_assign: top_module_name + ' ' + top_module_name + '_inst\n(\n' + pin_assign + ');\n\n'
 
                     
-        content += multilineComment(
-            "PG pad instance"
-        )
-        content += pg_pad_inst + '\n\n\n'
+        # content += multilineComment(
+        #     "PG pad instance"
+        # )
+        # content += pg_pad_inst + '\n\n\n'
 
 
         # for ii in range(0, port_total_num):

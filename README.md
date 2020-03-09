@@ -52,7 +52,6 @@ io_def.writeIOFile("clock_ctrl.io")
 netlist = writeNetlist("clock_ctrl_wrapped.v", io_def, "clock_ctrl_wrapped", ports)
 ```
 
-
 ### 2. Run the script
 
 ```bash
