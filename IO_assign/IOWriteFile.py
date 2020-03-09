@@ -32,18 +32,34 @@ def cellInst(port_direction,
     cell_inst += ");\n\n"
     return cell_inst
 
-def cellInstNetlist(ports, pg_name_set,
+def cellInstNetlist(ports, 
+                    pg_name_set,
                     cell_name = "MDSDUIX16",
                     ds = "111",
-                    smt = "",
-                    oen = "1'b0",
-                    pd = "",
-                    pu = "",
-                    ie = "1'b1"):
+                    smt_port_list = [],
+                    pad_pull_up = True,
+                    enable = {
+                        "smt" : True,
+                        "oen" : False,
+                        "ie" : True,
+                        "pu" : True,
+                        "pd" : True
+                    }):
 
     port_count = countPorts(ports)
     port_total_num = len(port_count["ports"])
     content = ""
+
+    smt = "1'b" + str(int(enable["smt"]))
+    smt_iv = "1'b" + str(int(not enable["smt"]))
+    oen = "1'b" + str(int(enable["oen"]))
+    oen_iv = "1'b" + str(int(not enable["oen"]))
+    ie = "1'b" + str(int(enable["ie"]))
+    ie_iv = "1'b" + str(int(not enable["ie"]))
+    pu = "1'b" + str(int(enable["pu"]))
+    pu_iv = "1'b" + str(int(not enable["pu"]))
+    pd = "1'b" + str(int(enable["pd"]))
+    pd_iv = "1'b" + str(int(not enable["pd"]))
 
     for iii in range(0, port_total_num):
         port_dims = port_count["ports"][iii]["dims"]
@@ -58,34 +74,38 @@ def cellInstNetlist(ports, pg_name_set,
                 cell_inst_name = cell_name + "_" + ports[iii]["name"] + posfix_jjj + posfix_kkk
 
                 content += cell_name + '\t' + cell_inst_name + '_inst' + '\n(\n'
-                # content += "\t.VDD(" + pg_name_set["core_vdd"] + "),\n"
-                # content += "\t.VSS(" + pg_name_set["core_vss"] + "),\n"
-                # content += "\t.VDDIO(" + pg_name_set["io_vdd"] + "),\n"
-                # content += "\t.VSSIO(" + pg_name_set["io_vss"] + "),\n"
-                # content += "\t.POC(" + pg_name_set["poc"] + "),\n"
                 content += "\t.DS0(" + "1'b" + ds[2] + "),\n"
                 content += "\t.DS1(" + "1'b" + ds[1] + "),\n"
                 content += "\t.DS2(" + "1'b" + ds[0] + "),\n"
-                content += "\t.SMT(" + smt + "),\n"
-                # content += "\t.OEN(" + oen + "),\n"
-                content += "\t.PU(" + pu + "),\n"
-                content += "\t.PD(" + pd + "),\n"
-                # content += "\t.IE(" + ie + "),\n"
+                if ports[iii]["name"] in smt_port_list:
+                    content += "\t.SMT(" + smt + "),\n"
+                else:
+                    content += "\t.SMT(" + smt_iv + "),\n"
                 if port_direction == "inout" :
-                    content += "\t.OEN(1'b0),\n"
-                    content += "\t.IE(1'b1),\n"
+                    if pad_pull_up :
+                        content += "\t.PU(" + pu + "),\n"
+                        content += "\t.PD(" + pd_iv + "),\n"
+                    else:
+                        content += "\t.PU(" + pu_iv + "),\n"
+                        content += "\t.PD(" + pd + "),\n"
+                    content += "\t.OEN(" + oen + "),\n"# oen
+                    content += "\t.IE(" + ie + "),\n"# ie
                     content += "\t.A(" + port_name + "_A),\n"
                     content += "\t.D(" + port_name + "_D),\n"
                 elif port_direction == "input":
-                    content += "\t.OEN(1'b1),\n"
-                    content += "\t.IE(1'b1),\n"
-                    content += "\t.A(),\n"
+                    content += "\t.PU(" + pu_iv + "),\n"
+                    content += "\t.PD(" + pd_iv + "),\n"
+                    content += "\t.OEN(" + oen_iv + "),\n" # oen_iv
+                    content += "\t.IE(" + ie + "),\n" # ie
+                    content += "\t.A(1'b0),\n"
                     content += "\t.D(" + port_name + "_D),\n"
                 elif port_direction == "output":
-                    content += "\t.OEN(1'b0),\n"
-                    content += "\t.IE(1'b0),\n"
+                    content += "\t.PU(" + pu_iv + "),\n"
+                    content += "\t.PD(" + pd_iv + "),\n"
+                    content += "\t.OEN(" + oen + "),\n" # oen
+                    content += "\t.IE(" + ie_iv + "),\n" # ie_iv
                     content += "\t.A(" + port_name + "_A),\n"
-                    content += "\t.D(),\n"
+                    content += "\t.D(1'b0),\n"
                 else:
                     print("DIRECTION ERROR!")
                 content += "\t.PAD(" + port_name + ")\n"
@@ -262,6 +282,7 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
         cell_inst = cellInstNetlist(ports,
                                     pg_name_set, 
                                     cell_name=io_assign_def.digital_pad.io.DIO,
+                                    smt_port_list=io_assign_def.smt_port_list,
                                     ds=io_assign_def.driving_strength)
         # cell_inst = cellInstNetlist(ports, io_assign_def.digital_pad.io.DIO, cell_pin)
         content += multilineComment(

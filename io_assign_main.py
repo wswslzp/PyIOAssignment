@@ -12,6 +12,8 @@ if __name__ == "__main__":
     io_def.digital_pad.supply.io_supply.VSS = "VSS2DGZS"
     io_def.digital_pad.supply.core_supply.VDD = "VDD1DGZS"
     io_def.digital_pad.supply.core_supply.VSS = "VSS1DGZS"
+    io_def.driving_strength = "011"
+    io_def.smt_port_list = ["rst_n"]
 
     ports = inputNetlist("clock_ctrl.v", "clock_ctrl")
 
