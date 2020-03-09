@@ -170,18 +170,11 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
                 pad_inst_name = pad_inst.name[1:-1]
                 if pad_inst_cell in [core_vdd_cell, core_vss_cell, io_vdd_cell, io_vss_cell]:
                     pg_pad_inst += pad_inst_cell + ' ' + pad_inst_cell + "_inst_" + str(pg_idx) + "\n(\n"
-                    # pg_pad_inst += "\t.VDDIO(" + pg_name_set["io_vdd"] + "),\n"
-                    # pg_pad_inst += "\t.VSSIO(" + pg_name_set["io_vss"] + "),\n"
-                    # pg_pad_inst += "\t.VDD(" + pg_name_set["core_vdd"] + "),\n"
-                    # pg_pad_inst += "\t.VSS(" + pg_name_set["core_vss"] + "),\n"
-                    # pg_pad_inst += "\t.POC(" + pg_name_set["poc"] + ")\n"
                     pg_pad_inst += ");\n"
                     pg_idx += 1
                 elif pad_inst_cell == corner_cell:
                     corner_position = pad_side.root
                     pg_pad_inst += pad_inst_cell+ ' ' + pad_inst_cell + '_' + corner_position + "_inst" + "\n(\n"
-                    # pg_pad_inst += "\t.VDD(" + pg_name_set["core_vdd"] + "),\n"
-                    # pg_pad_inst += "\t.VSS(" + pg_name_set["core_vss"] + ")"
                     pg_pad_inst += "\n);\n"
                 else : 
                     continue
@@ -191,7 +184,7 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
         port_count = countPorts(ports)
         port_total_num = len(port_count["ports"])
         port_dec = ""
-        wire_inst_c2p, wire_inst_m2c, wire_inst_port, wire_inst_pin = "", "", "", ""
+        wire_inst_m2c, wire_inst_port, wire_inst_pin = "", "", ""
         port_merge = ""
         module_pin_assign = ""
         for ii in range(0, port_total_num):
@@ -249,21 +242,8 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
                     port_dec += '\n' if (ii==port_total_num-1) and (jj==port_dims-1) and (kk==port_width-1) else ',\n'
 
         
-        # for pg_type in pg_name_set:
-        #     port_dec = "\tinout\t\t" + pg_name_set[pg_type] + ',\n' + port_dec
         content += module_dec(port_dec)
 
-        # content += multilineComment(
-        #     "Port inst"
-        # )
-
-        # content += wire_inst_port + wire_inst_c2p + wire_inst_m2c + '\n\n'
-        # content += multilineComment(
-        #     "Port instance"
-        # ) + wire_inst_port
-        # content += multilineComment(
-        #     "Cell to Port wire instance"
-        # ) + wire_inst_c2p
         content += multilineComment(
             "Module to Cell wire instance"
         ) + wire_inst_m2c
