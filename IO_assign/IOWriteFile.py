@@ -71,14 +71,20 @@ def cellInstNetlist(ports, pg_name_set,
                 content += "\t.PU(" + pu + "),\n"
                 content += "\t.PD(" + pd + "),\n"
                 content += "\t.IE(" + ie + "),\n"
-                if port_direction != "inout" :
+                if port_direction == "inout" :
                     content += "\t.A(" + port_name + "_A),\n"
                     content += "\t.D(" + port_name + "_D),\n"
-                    content += "\t.PAD()\n"
+                elif port_direction == "input":
+                    content += "\t.A(" + port_name + "_A),\n"
+                elif port_direction == "output":
+                    content += "\t.D(" + port_name + "_D),\n"
                 else:
-                    content += "\t.A(),\n"
-                    content += "\t.D(),\n"
-                    content += "\t.PAD(" + port_name + ")\n"
+                    print("DIRECTION ERROR!")
+                content += "\t.PAD(" + port_name + ")\n"
+                # else:
+                #     content += "\t.A(),\n"
+                #     content += "\t.D(),\n"
+                #     content += "\t.PAD(" + port_name + ")\n"
                 content += ");\n\n"
     return content
 
@@ -179,31 +185,37 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
                     port_direction = ports[ii]["direction"]
 
                     # declare wire
-                    wire_name_c2pfix = '_D' if (port_direction == "output") else '_A'
-                    wire_name_c2pfix = '_CELL2PORT_PAD' if (port_direction == "inout") else wire_name_c2pfix
-                    wire_name_m2cfix = '_A' if (port_direction == "output") else '_D'
-                    wire_name_m2cfix = '_PIN2CELL_PAD' if (port_direction == "inout") else wire_name_m2cfix
-                    wire_inst_c2p += "wire\t" + port_name + wire_name_c2pfix + ";\n"
+                    wire_name_m2cfix_inv = '_A' if (port_direction == "output") else '_D'
+                    # wire_name_c2pfix = '_CELL2PORT_PAD' if (port_direction == "inout") else wire_name_c2pfix
+                    wire_name_m2cfix = '_D' if (port_direction == "output") else '_A'
+                    # wire_name_m2cfix = '_PIN2CELL_PAD' if (port_direction == "inout") else wire_name_m2cfix
+                    # wire_inst_c2p += "wire\t" + port_name + wire_name_c2pfix + ";\n"
                     wire_inst_m2c += "wire\t" + port_name + wire_name_m2cfix + ";\n"
+                    wire_inst_m2c += "wire\t" + port_name + wire_name_m2cfix_inv + ";\n"
                     wire_inst_port += "wire\t" + port_name + ";\n"
                     # wire_inst_pin += "wire\t" + posfix_kk_bracket + '\t' + pin_name + '\t' + posfix_jj_bracket + ";\n"
 
                     # cell to pad
-                    wire_c2p_name = port_name + wire_name_c2pfix
-                    if port_direction == "output": 
-                        port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
-                    elif port_direction == "input":
-                        port_merge += "assign\t" + wire_c2p_name + "\t=\t" + port_name + ';\n'
-                    else:
-                        port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
+                    # wire_c2p_name = port_name + wire_name_c2pfix
+                    # if port_direction == "output": 
+                    #     port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
+                    # elif port_direction == "input":
+                    #     port_merge += "assign\t" + wire_c2p_name + "\t=\t" + port_name + ';\n'
+                    # else:
+                    #     port_merge += "assign\t" + port_name + "\t=\t" + wire_c2p_name + ';\n'
                     # module to cell
-                    wire_m2c_name = port_name + wire_name_m2cfix
+                    # wire_m2c_name = port_name + wire_name_m2cfix
                     if port_direction == "output":
+                        wire_m2c_name = port_name + "_D"
                         port_merge += "assign\t" + wire_m2c_name + "\t=\t" + ports[ii]["name"] + posfix_bracket + ';\n'
                     elif port_direction == "input":
+                        wire_m2c_name = port_name + "_A"
                         port_merge += "assign\t" + ports[ii]["name"] + posfix_bracket + "\t=\t" + wire_m2c_name + ';\n'
                     else:
-                        port_merge += "assign\t" + wire_m2c_name + "\t=\t" + ports[ii]["name"] + posfix_bracket + ';\n'
+                        wire_m2c_name_in = port_name + "_A"
+                        wire_m2c_name_out = port_name + "_D"
+                        port_merge += "assign\t" + wire_m2c_name_out + "\t=\t" + ports[ii]["name"] + posfix_bracket + ';\n'
+                        port_merge += "assign\t" + ports[ii]["name"] + posfix_bracket + "\t=\t" + wire_m2c_name_in + ';\n'
 
                     port_dec += '\t' + port_direction + '\t\t'+ port_name # cell to port
                     port_dec += '\n' if (ii==port_total_num-1) and (jj==port_dims-1) and (kk==port_width-1) else ',\n'
@@ -221,9 +233,9 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
         # content += multilineComment(
         #     "Port instance"
         # ) + wire_inst_port
-        content += multilineComment(
-            "Cell to Port wire instance"
-        ) + wire_inst_c2p
+        # content += multilineComment(
+        #     "Cell to Port wire instance"
+        # ) + wire_inst_c2p
         content += multilineComment(
             "Module to Cell wire instance"
         ) + wire_inst_m2c
