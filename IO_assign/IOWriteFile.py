@@ -105,7 +105,7 @@ def cellInstNetlist(ports,
                     content += "\t.OEN(" + oen + "),\n" # oen
                     content += "\t.IE(" + ie_iv + "),\n" # ie_iv
                     content += "\t.A(" + port_name + "_A),\n"
-                    content += "\t.D(1'b0),\n"
+                    content += "\t.D(),\n"
                 else:
                     print("DIRECTION ERROR!")
                 content += "\t.PAD(" + port_name + ")\n"
