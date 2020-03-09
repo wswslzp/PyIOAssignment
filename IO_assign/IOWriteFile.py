@@ -79,11 +79,13 @@ def cellInstNetlist(ports, pg_name_set,
                 elif port_direction == "input":
                     content += "\t.OEN(1'b1),\n"
                     content += "\t.IE(1'b1),\n"
+                    content += "\t.A(),\n"
                     content += "\t.D(" + port_name + "_D),\n"
                 elif port_direction == "output":
                     content += "\t.OEN(1'b0),\n"
                     content += "\t.IE(1'b0),\n"
                     content += "\t.A(" + port_name + "_A),\n"
+                    content += "\t.D(),\n"
                 else:
                     print("DIRECTION ERROR!")
                 content += "\t.PAD(" + port_name + ")\n"
