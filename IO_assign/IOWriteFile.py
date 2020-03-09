@@ -67,16 +67,22 @@ def cellInstNetlist(ports, pg_name_set,
                 content += "\t.DS1(" + "1'b" + ds[1] + "),\n"
                 content += "\t.DS2(" + "1'b" + ds[0] + "),\n"
                 content += "\t.SMT(" + smt + "),\n"
-                content += "\t.OEN(" + oen + "),\n"
+                # content += "\t.OEN(" + oen + "),\n"
                 content += "\t.PU(" + pu + "),\n"
                 content += "\t.PD(" + pd + "),\n"
-                content += "\t.IE(" + ie + "),\n"
+                # content += "\t.IE(" + ie + "),\n"
                 if port_direction == "inout" :
+                    content += "\t.OEN(1'b0),\n"
+                    content += "\t.IE(1'b1),\n"
                     content += "\t.A(" + port_name + "_A),\n"
                     content += "\t.D(" + port_name + "_D),\n"
                 elif port_direction == "input":
+                    content += "\t.OEN(1'b1),\n"
+                    content += "\t.IE(1'b1),\n"
                     content += "\t.D(" + port_name + "_D),\n"
                 elif port_direction == "output":
+                    content += "\t.OEN(1'b0),\n"
+                    content += "\t.IE(1'b0),\n"
                     content += "\t.A(" + port_name + "_A),\n"
                 else:
                     print("DIRECTION ERROR!")
