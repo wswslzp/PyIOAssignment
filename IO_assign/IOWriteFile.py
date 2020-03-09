@@ -259,8 +259,10 @@ def writeNetlist(netlist_file, io_assign_def, top_module_name, ports):
 
         # Module inst : cell inst and original module inst
         # cell inst using another function: cellInstNetlist()
-        cell_inst = cellInstNetlist(ports, pg_name_set, 
-                                    cell_name=io_assign_def.digital_pad.io.DIO)
+        cell_inst = cellInstNetlist(ports,
+                                    pg_name_set, 
+                                    cell_name=io_assign_def.digital_pad.io.DIO,
+                                    ds=io_assign_def.driving_strength)
         # cell_inst = cellInstNetlist(ports, io_assign_def.digital_pad.io.DIO, cell_pin)
         content += multilineComment(
             "Cell instance"

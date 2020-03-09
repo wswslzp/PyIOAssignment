@@ -127,6 +127,7 @@ class IOAssignDef(object):
         self.pad_ring = PadRingDef()
         self.digital_pad = DigitalPad()
         self.ports = None
+        self.driving_strength = "000"
 
     def inputPorts(self, ports):
         import math
