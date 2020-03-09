@@ -21,7 +21,7 @@ if __name__ == "__main__":
     
     io_def.writeIOFile("clock_ctrl.io")
 
-    writeNetlist("clock_ctrl_wrapped.v", io_def, "clock_ctrl_withio.v", ports)
+    writeNetlist("clock_ctrl_wrapped.v", io_def, "clock_ctrl_withio", ports)
     #print(netlist)
 
 
