@@ -6,7 +6,6 @@ if __name__ == "__main__":
 
     io_def = IOAssignDef()
     io_def.digital_pad.io.DIO = "MDSDUSX16"
-    io_def.digital_pad.io.BDIO = "MDSDUSX16"
     io_def.digital_pad.supply.corner = "MCORNERS"
     io_def.digital_pad.supply.io_supply.VDD = "VDD2DGZS"
     io_def.digital_pad.supply.io_supply.VSS = "VSS2DGZS"
