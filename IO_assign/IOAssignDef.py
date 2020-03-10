@@ -166,8 +166,10 @@ class IOAssignDef(object):
 
     def setPGPad(self, io_sup_num, core_sup_num, core_p, core_g, io_p, io_g):
         import math
-        core_sup_num_per_side = math.ceil(core_sup_num/4) * 2
-        io_sup_num_per_side = math.ceil(io_sup_num/4) * 2
+        #core_sup_num_per_side = math.ceil(core_sup_num/4) * 2
+        core_sup_num_per_side = math.ceil(core_sup_num/4) 
+        #io_sup_num_per_side = math.ceil(io_sup_num/4) * 2
+        io_sup_num_per_side = math.ceil(io_sup_num/4) 
         row_max_num_without_pg = self.pad_ring.row_max
         row_max_num = row_max_num_without_pg + core_sup_num_per_side + io_sup_num_per_side
         self.pad_ring.setRowMax(row_max_num)
