@@ -168,8 +168,8 @@ def powerPlanDesign(total_power,
                     k,
                     max_current_density,
                     ring_num,
-                    metal_pitch,
-                    vertical_pitch,
+                    metal_pitch, # this pitch is the ring metal pitch
+                    vertical_pitch, # this pitch is the strap metal pitch
                     min_nand_width,
                     stdcell_height,
                     chip_height,
@@ -233,8 +233,8 @@ def powerStripe(total_power,
     Wh = 2 * stdcell_height
     Ih = chip_height / (chip_height + chip_width) * I_total
     Iv = chip_width / (chip_width + chip_height) * I_total
-    Rev = .05 * (vdd/2)/Iv
-    Reh = .05 * (vdd/2)/Ih
+    Rev = IR_drop * (vdd/2)/Iv
+    Reh = IR_drop * (vdd/2)/Ih
     Rsv = res_square_v * chip_height/Wv
     Rsh = res_square_h * chip_width/Wh
     N = Rsv/Rev
@@ -243,10 +243,10 @@ def powerStripe(total_power,
     SpaceH = chip_height/M
 
     return {
-        "vertical_width": Wv,
-        "horizontal_width": Wh,
-        "vertical_space": SpaceV,
-        "horizontal_space": SpaceH
+        "vertical_width": Wh,
+        "horizontal_width": Wv,
+        "vertical_space": SpaceH,
+        "horizontal_space": SpaceV
     }
 
 def multilineComment(*comment):

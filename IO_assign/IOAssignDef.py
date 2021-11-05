@@ -149,6 +149,8 @@ class IOAssignDef(object):
                     pad_def = PadDef()
                     pad_def.setName(pad_inst_name).setCell(pad_cell)
                     self.pad_ring.addPad(pad_def)
+        self.pad_ring.right.leaf_list.reverse()
+        self.pad_ring.bottom.leaf_list.reverse()
 
     def setCorner(self):
         self.pad_ring.topleft.setRowMax(1).addPad(
@@ -181,6 +183,7 @@ class IOAssignDef(object):
             import copy
             if count % 2 == 0:
                 # self.pad_ring.top.insertPad(vdd_pad_io_supply.deepCopy(), idx)
+                print("now insert io supply")
                 self.pad_ring.top.insertPad(
                     PadDef().setName(io_p).setCell(self.digital_pad.supply.io_supply.VDD),
                     idx
@@ -214,6 +217,7 @@ class IOAssignDef(object):
                     idx+1
                 )
             else:
+                print("now insert core supply")
                 self.pad_ring.top.insertPad(
                     PadDef().setName(core_p).setCell(self.digital_pad.supply.core_supply.VDD),
                     idx
