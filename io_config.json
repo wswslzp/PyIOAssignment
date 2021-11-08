@@ -1,0 +1,27 @@
+{
+    "TopModule": "",
+    "PadCell": {
+        "DigitalIO": "PBCD16R",
+        "Corner": "PVDD1RESD",
+        "IOVDD": "PVDD2R",
+        "IOVSS": "PVSS2R",
+        "COREVDD": "PVDD1R",
+        "COREVSS": "PVSS1R"
+    },
+    "DrivingStrength": "011",
+    "SMTPortList": [
+        "rst_n"
+    ],
+    "PowerGround": {
+        "IOPGNum": 4,
+        "CorePGNum": 8,
+        "IOPG": {
+            "Power": "IO_VCCK",
+            "Ground": "IO_GNDK"
+        },
+        "CorePG": {
+            "Power": "CORE_VCCK",
+            "Ground": "CORE_GNDK"
+        }
+    }
+}
