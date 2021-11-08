@@ -6,14 +6,15 @@ from IO_assign.IOAssignDef import *
 from IO_assign.IOWriteFile import *
 
 def run(args):
-    config = json.load(args.config)
+    with open(args.config) as f:
+        config = json.load(f)
     
     io_def = IOAssignDef()
     io_def.digital_pad.io.DIO = config["PadCell"]["DigitalIO"]
     io_def.digital_pad.supply.corner = config["PadCell"]["Corner"]
-    io_def.digital_pad.supply.io_supply.VDD = config["Padcell"]["IOVDD"]
+    io_def.digital_pad.supply.io_supply.VDD = config["PadCell"]["IOVDD"]
     io_def.digital_pad.supply.io_supply.VSS = config["PadCell"]["IOVSS"]
-    io_def.digital_pad.supply.core_supply.VDD = config["PadCell"]["CORECDD"]
+    io_def.digital_pad.supply.core_supply.VDD = config["PadCell"]["COREVDD"]
     io_def.digital_pad.supply.core_supply.VSS = config["PadCell"]["COREVSS"]
     io_def.driving_strength = config["DrivingStrength"]
     io_def.smt_port_list = config["SMTPortList"]
@@ -42,27 +43,3 @@ parser.add_argument("--output-io", type=str, help="output io file")
 parser.add_argument("--output-netlist", type=str, help="output netlist file")
 args = parser.parse_args()
 run(args)
-
-# io_def = IOAssignDef()
-# io_def.digital_pad.io.DIO = "PBCD16R"
-# io_def.digital_pad.supply.corner = "PVDD1RESD"
-# io_def.digital_pad.supply.io_supply.VDD = "PVDD2R"
-# io_def.digital_pad.supply.io_supply.VSS = "PVSS2R"
-# io_def.digital_pad.supply.core_supply.VDD = "PVDD1R"
-# io_def.digital_pad.supply.core_supply.VSS = "PVSS1R"
-# io_def.driving_strength = "011"
-# io_def.smt_port_list = ["rst_n"]
-
-# ports = inputNetlist("post_dc_CSHM_PR_v1_FIR_CSHM_v2.v", "FIR_CSHM_v2")
-# print(ports)
-
-
-# io_def.inputPorts(ports)
-# io_def.setPGPad(4, 8, "CORE_VCCK", "CORE_GNDK", "IO_VCCK", "IO_GNDK")
-
-# io_def.writeIOFile("FIR_CSHM_v2.io")
-
-# writeNetlist("FIR_CSHM_v2_withio.v", io_def, "FIR_CSHM_v2", ports)
-#print(netlist)
-
-
