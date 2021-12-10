@@ -1,6 +1,23 @@
 import re
 import math
 
+class LOGGER(object):
+    verbose = 0 # 0: only error report; 1: error and warning; 2: all info report; 3: only for debug info
+    def __init__(self) -> None:
+        super().__init__()
+
+    def reportError(str):
+        print(str)
+    def reportWarn(str):
+        if LOGGER.verbose > 0:
+            print(str)
+    def reportInfo(str):
+        if LOGGER.verbose > 1:
+            print(str)
+    def reportDebug(str):
+        if LOGGER.verbose == 3:
+            print(str)
+
 def commentDelete(verilog_netlist):
     comment_pattern1 = re.compile(
         r"(//.*\n|/\*([\s\S]*)\*/)"
@@ -91,6 +108,7 @@ def inputNetlist(netlist_file, top_module):
             re_module = re.compile(r"module\s*" + top_module)
             re_module_match = re_module.search(verilog_netlist)
             if re_module_match:
+                LOGGER.reportDebug("The top module is " + top_module)
                 re_module_start = re_module_match.start()
                 re_endmodule = re.compile(r"endmodule")
                 re_module_end = re_endmodule.search(verilog_netlist[re_module_start:]).end()

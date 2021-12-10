@@ -1,7 +1,9 @@
 # What below is the digital pad part.
 class DigitalIO(object):
-    def __init__(self, DIO = None, BDIO = None):
+    def __init__(self, DIO = None, BDIO = None, DIO_I=None, DIO_O=None):
         self.DIO = DIO
+        self.DIO_I = DIO_I 
+        self.DIO_O = DIO_O
         self.BDIO = BDIO
 
 class DigitalCoreSupply(object):

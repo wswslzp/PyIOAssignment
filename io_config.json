@@ -1,17 +1,71 @@
 {
-    "TopModule": "",
-    "PadCell": {
-        "DigitalIO": "PBCD16R",
+    "TopModule": "wrapper",
+    "DataPadCell": {
+        "inputCell": {
+            "valid": true,
+            "name": "XTRNF",
+            "port":{
+                "chipPad": "I",
+                "pinToCore": "O",
+                "pinFromCore": "",
+                "inputEnable": "IE",
+                "cellEnable": "E3V",
+                "schmitt": "SMT",
+                "pullUp": "PU",
+                "pullDown": "PD",
+                "drivingStrength": ["", ""],
+                "slewRate": ""
+            }
+        },
+        "outputCell": {
+            "valid": true,
+            "name": "YTRF4GS",
+            "port": {
+                "chipPad": "O",
+                "pinToCore": "",
+                "pinFromCore": "I",
+                "outputEnable": "E",
+                "cellEnable": "E3V",
+                "schmitt": "",
+                "pullUp": "",
+                "pullDown": "",
+                "drivingStrength": ["E8", "E4"],
+                "slewRate": "SR"
+            }
+        },
+        "inoutCell": {
+            "valid": true,
+            "name": "ZTRNF4GS",
+            "port": {
+                "chipPad": "IO",
+                "pinToCore": "O",
+                "pinFromCore": "I",
+                "inputEnable": "IE",
+                "outputEnable": "",
+                "cellEnable": "E3V",
+                "schmitt": "SMT",
+                "pullUp": "PU",
+                "pullDown": "PD",
+                "drivingStrength": ["E8", "E4"],
+                "slewRate": "SR"
+            }
+        },
+        "meta": { 
+            "drivingStrength": "11",
+            "pullUp": true,
+            "pullDown": false,
+            "slewRate": true,
+            "schmitt": true,
+            "SMTPortList": []
+        }
+    },
+    "PGPadCell": {
         "Corner": "PVDD1RESD",
         "IOVDD": "PVDD2R",
         "IOVSS": "PVSS2R",
         "COREVDD": "PVDD1R",
         "COREVSS": "PVSS1R"
     },
-    "DrivingStrength": "011",
-    "SMTPortList": [
-        "rst_n"
-    ],
     "PowerGround": {
         "IOPGNum": 4,
         "CorePGNum": 8,

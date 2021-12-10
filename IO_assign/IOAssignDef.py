@@ -144,7 +144,17 @@ class IOAssignDef(object):
                     posfix_kk = "" if pad_width==1 else "_"+str(kk)
                     posfix = posfix_jj + posfix_kk
                     # pad_inst_name = port_count["ports"][ii]["name"] + "_PORT" + posfix
-                    pad_cell = self.digital_pad.io.BDIO if ports[ii]["direction"] == "inout" else self.digital_pad.io.DIO
+                    # pad_cell = self.digital_pad.io.BDIO if ports[ii]["direction"] == "inout" else self.digital_pad.io.DIO
+                    pad_cell = ""
+                    if ports[ii]["direction"] == "input":
+                        pad_cell = self.digital_pad.io.DIO_I
+                    elif ports[ii]["direction"] == "output":
+                        pad_cell = self.digital_pad.io.DIO_O
+                    elif ports[ii]["direction"] == "inout":
+                        pad_cell = self.digital_pad.io.BDIO
+                    else:
+                        print("WARNING, unknown direction detected.")
+                        pad_cell = self.digital_pad.io.DIO
                     pad_inst_name = pad_cell + "_" + ports[ii]["name"] + posfix + "_inst"
                     pad_def = PadDef()
                     pad_def.setName(pad_inst_name).setCell(pad_cell)
