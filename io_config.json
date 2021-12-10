@@ -3,7 +3,7 @@
     "DataPadCell": {
         "inputCell": {
             "valid": true,
-            "name": "XTRNF",
+            "name": "XTRNFLB18",
             "port":{
                 "chipPad": "I",
                 "pinToCore": "O",
@@ -19,7 +19,7 @@
         },
         "outputCell": {
             "valid": true,
-            "name": "YTRF4GS",
+            "name": "YTRF4GSLB18",
             "port": {
                 "chipPad": "O",
                 "pinToCore": "",
@@ -35,7 +35,7 @@
         },
         "inoutCell": {
             "valid": true,
-            "name": "ZTRNF4GS",
+            "name": "ZTRNF4GSLB18",
             "port": {
                 "chipPad": "IO",
                 "pinToCore": "O",
@@ -60,22 +60,22 @@
         }
     },
     "PGPadCell": {
-        "Corner": "PVDD1RESD",
-        "IOVDD": "PVDD2R",
-        "IOVSS": "PVSS2R",
-        "COREVDD": "PVDD1R",
-        "COREVSS": "PVSS1R"
+        "Corner": "CORNERLB",
+        "IOVDD": "VCC3IOLB",
+        "IOVSS": "GNDIOLB",
+        "COREVDD": "VCCKLB",
+        "COREVSS": "GNDKLB"
     },
     "PowerGround": {
         "IOPGNum": 4,
         "CorePGNum": 8,
         "IOPG": {
-            "Power": "IO_VCCK",
-            "Ground": "IO_GNDK"
+            "Power": "VDD_IO",
+            "Ground": "VSS_IO"
         },
         "CorePG": {
-            "Power": "CORE_VCCK",
-            "Ground": "CORE_GNDK"
+            "Power": "VDD_CORE",
+            "Ground": "VSS_CORE"
         }
     }
 }

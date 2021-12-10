@@ -79,18 +79,19 @@ class IOCell(object):
 
     # logicPort: the key in the self.ports
     # value: the connected signal.
-    def setPortToValue(self, logicPort, value) -> str:
+    def setPortToValue(self, logicPort, value, isFinal) -> str:
         """
         return the port connection string: ".port(value)"\n
         here the value is either a wire or a verilog literal `1'b1/1'b0`.
         """
         ret = ""
+        ending = ")\n" if isFinal else "),\n"
         if type(self.ports[logicPort]) is str:
-            ret = "\t."+self.ports[logicPort]+"(" + value + "),\n"
+            ret = "\t."+self.ports[logicPort]+"(" + value + ending
         elif type(self.ports[logicPort]) is list:
             assert len(self.ports[logicPort]) <= len(value), "ERROR! the size of value is smaller than the port size."
             for ii in range(len(self.ports[logicPort])):
-                ret += "\t."+self.ports[logicPort][ii]+"("+value[ii]+"),\n"
+                ret += "\t."+self.ports[logicPort][ii]+"("+value[ii]+ending
         return ret
     
     def connect(self, bundle: IOCellBundle):
@@ -98,8 +99,11 @@ class IOCell(object):
         connect the cell port to the bundle, return the connection string.
         """
         ret = ""
+        idx = 1
+        portsLen = len(self.ports)
         for logicPort in self.ports:
-            ret += self.setPortToValue(logicPort, bundle.bundle[logicPort])
+            ret += self.setPortToValue(logicPort, bundle.bundle[logicPort], idx == portsLen)
+            idx += 1
         return ret
 
 class InputCell(IOCell):
