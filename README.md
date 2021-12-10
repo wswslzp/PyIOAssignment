@@ -5,8 +5,6 @@
 * Python 2/3;
 * Netlist file of top level module, written in Verilog/SystemVerilog, with non-parametric ports definition.
 
-# Automatic IO cell wrapper 
-
 ## Overview
 
 The help description of the script.
